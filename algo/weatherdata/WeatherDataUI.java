@@ -142,6 +142,9 @@ public class WeatherDataUI {
      * @param result the result to present
      */
     private void presentResult(List<String> result) {
+        if(result == null) {
+            System.out.println("Result is null");
+        }
     	if(result.size() == 0) {
     		System.out.println("No matching values for the provided query.");
     	}    	
