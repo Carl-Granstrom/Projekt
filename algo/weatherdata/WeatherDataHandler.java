@@ -69,6 +69,7 @@ public class WeatherDataHandler {
 		 */
 		return null;
 	}
+
 	/**
 	 * Search for missing values between the two dates (inclusive) assuming there 
 	 * should be 24 measurement values for each day (once every hour). Result is
@@ -84,6 +85,7 @@ public class WeatherDataHandler {
 		 */
 		return null;
 	}
+
 	/**
 	 * Search for percentage of approved values between the two dates (inclusive).
 	 * 
