@@ -4,11 +4,35 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 /**
  * Provides methods to retrieve temperature data from a weather station file.    
  */
 public class WeatherDataHandler {
+
+	/**
+	 * Test method
+	 */
+	public void test(String filePath) throws IOException {
+		//Read all weather data
+		List<String> fileData = Files.readAllLines(Paths.get(filePath));
+
+		List<Measurement> measurements = new LinkedList<>();
+
+		for (String s : fileData){
+			String[] tmp = s.split(";");
+			Measurement m = new Measurement(tmp[0], tmp[1], tmp[2], tmp[3]);
+			measurements.add(m);
+		}
+
+		for (Measurement m : measurements){
+			System.out.println(m);
+		}
+
+	}
+
+
 	/**
 	 * Load weather data from file.
 	 * 
@@ -18,11 +42,19 @@ public class WeatherDataHandler {
 	public void loadData(String filePath) throws IOException {
 		//Read all weather data
 		List<String> fileData = Files.readAllLines(Paths.get(filePath));
-		
+
+		List<Measurement> measurements = new LinkedList<>();
+
+		for (String s : fileData){
+			String[] tmp = s.split(";");
+			Measurement m = new Measurement(tmp[0], tmp[1], tmp[2], tmp[3]);
+		}
 		/**
 		 * TODO: Format data and put it in appropriate data structure.
 		 */
+
 	}
+
 	/**
 	 * Search for average temperature for all dates between the two dates (inclusive).
 	 * Result is sorted by date.
