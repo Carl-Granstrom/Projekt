@@ -4,34 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+
 /**
  * Provides methods to retrieve temperature data from a weather station file.    
  */
 public class WeatherDataHandler {
 
-	/**
-	 * Test method
-	 */
-	public void test(String filePath) throws IOException {
-		//Read all weather data
-		List<String> fileData = Files.readAllLines(Paths.get(filePath));
-
-		List<Measurement> measurements = new LinkedList<>();
-
-		for (String s : fileData){
-			String[] tmp = s.split(";");
-			Measurement m = new Measurement(tmp[0], tmp[1], tmp[2], tmp[3]);
-			measurements.add(m);
-		}
-
-		for (Measurement m : measurements){
-			System.out.println(m);
-		}
-
-	}
-
+	public Map<LocalDateTime, Measurement> measurements;
 
 	/**
 	 * Load weather data from file.
@@ -43,16 +25,16 @@ public class WeatherDataHandler {
 		//Read all weather data
 		List<String> fileData = Files.readAllLines(Paths.get(filePath));
 
-		List<Measurement> measurements = new LinkedList<>();
+		measurements = new HashMap<>();
 
 		for (String s : fileData){
 			String[] tmp = s.split(";");
-			Measurement m = new Measurement(tmp[0], tmp[1], tmp[2], tmp[3]);
+			LocalDate date = LocalDate.parse(tmp[0]);
+			LocalTime time = LocalTime.parse(tmp[1]);
+			Measurement m = new Measurement(date, time, tmp[2], tmp[3]);
+			LocalDateTime key = LocalDateTime.of(date, time);
+			measurements.put(key, m);
 		}
-		/**
-		 * TODO: Format data and put it in appropriate data structure.
-		 */
-
 	}
 
 	/**
@@ -63,11 +45,42 @@ public class WeatherDataHandler {
 	 * @param dateTo end date (YYYY-MM-DD) inclusive
 	 * @return average temperature for each date, sorted by date  
 	 */
-	public List<String> avarageTemperatures(LocalDate dateFrom, LocalDate dateTo) {
-		/**
-		 * TODO: Implement method.		
-		 */
-		return null;
+	public List<String> averageTemperatures(LocalDate dateFrom, LocalDate dateTo) {
+		List<String> returnStrings = new ArrayList<>();
+
+		//create a list of times from 0 to 23
+		List<LocalTime> times = new ArrayList<>();
+		for (int i = 0; i < 24; i++) {
+			times.add(LocalTime.of(i, 0));
+		}
+
+		//create a list of dates to check
+		List<LocalDate> dates = new ArrayList<>();
+		LocalDate startDate = dateFrom;
+		LocalDate endDate = dateTo;
+
+		//iterate through the dates and calculate average
+		LocalDate currDate = startDate;
+		while (!currDate.isAfter(endDate)) {
+			Float averageTemperature;
+			Float totalTemperature = Float.valueOf(0);
+			String dateString = currDate.toString();
+			int numTimes = 0;
+			for (LocalTime time : times) {
+				LocalDateTime key = LocalDateTime.of(currDate, time);
+				Measurement measurement = measurements.get(key);
+				if (measurement != null) {
+					totalTemperature += measurement.temperature;
+					numTimes++;
+				}
+
+			}
+			averageTemperature = totalTemperature / numTimes;
+			returnStrings.add("Average temperature for " + dateString + ": " + averageTemperature);
+			currDate = currDate.plusDays(1);
+		}
+
+		return returnStrings;
 	}
 
 	/**

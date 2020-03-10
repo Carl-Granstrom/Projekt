@@ -107,7 +107,7 @@ public class WeatherDataUI {
         System.out.print("End date (will be included)\n");
         LocalDate dateTo = getDateInput();
                        
-        presentResult(weatherData.avarageTemperatures(dateFrom, dateTo));
+        presentResult(weatherData.averageTemperatures(dateFrom, dateTo));
     }
     /**
      * Query user for two dates and present the dates within the period

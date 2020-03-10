@@ -19,7 +19,7 @@ public class WeatherDataTest {
 		}
 		
 		try {				
-			weatherData.test(fileName);
+			weatherData.loadData(fileName);
 		} catch (Exception e) {
 			System.out.println("Problem while reading weather data: " + e.getMessage());
 			System.out.println("Closing program ...");

@@ -10,9 +10,9 @@ public class Measurement implements Comparable<Measurement> {
     Float temperature;
     char approvalcolor;
 
-    public Measurement(String date, String time, String temperature, String approvalColor){
-        this.date = LocalDate.parse(date);
-        this.time = LocalTime.parse(time);
+    public Measurement(LocalDate date, LocalTime time, String temperature, String approvalColor){
+        this.date = date;
+        this.time = time;
         this.temperature = Float.parseFloat(temperature.trim());
         this.approvalcolor = approvalColor.charAt(0);
     }
