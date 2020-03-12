@@ -14,6 +14,8 @@ import java.util.*;
 public class WeatherDataHandler {
 
 	public Map<LocalDateTime, Measurement> measurements;
+	List<LocalTime> times = new ArrayList<>();
+
 
 	/**
 	 * Load weather data from file.
@@ -35,6 +37,11 @@ public class WeatherDataHandler {
 			LocalDateTime key = LocalDateTime.of(date, time);
 			measurements.put(key, m);
 		}
+
+		//create a list of measurement times to check
+		for (int i = 0; i < 24; i++) {
+			times.add(LocalTime.of(i, 0));
+		}
 	}
 
 	/**
@@ -48,20 +55,12 @@ public class WeatherDataHandler {
 	public List<String> averageTemperatures(LocalDate dateFrom, LocalDate dateTo) {
 		List<String> returnStrings = new ArrayList<>();
 
-		//create a list of times from 0 to 23
-		List<LocalTime> times = new ArrayList<>();
-		for (int i = 0; i < 24; i++) {
-			times.add(LocalTime.of(i, 0));
-		}
-
 		//create a list of dates to check
 		List<LocalDate> dates = new ArrayList<>();
-		LocalDate startDate = dateFrom;
-		LocalDate endDate = dateTo;
 
 		//iterate through the dates and calculate average
-		LocalDate currDate = startDate;
-		while (!currDate.isAfter(endDate)) {
+		LocalDate currDate = dateFrom;
+		while (!currDate.isAfter(dateTo)) {
 			Float averageTemperature;
 			Float totalTemperature = Float.valueOf(0);
 			String dateString = currDate.toString();
@@ -93,10 +92,31 @@ public class WeatherDataHandler {
 	 * @return dates with missing values together with number of missing values for each date, sorted by date
 	 */
 	public List<String> missingValues(LocalDate dateFrom, LocalDate dateTo) {
-		/**
-		 * TODO: Implement method.		
-		 */
-		return null;
+		List<String> returnStrings = new ArrayList<>();
+
+		//create a list of dates to check
+		List<LocalDate> dates = new ArrayList<>();
+		LocalDate startDate = dateFrom;
+		LocalDate endDate = dateTo;
+		int numMissingValues = 0;
+
+		//iterate through the dates and calculate average
+		LocalDate currDate = startDate;
+		while (!currDate.isAfter(endDate)) {
+			String dateString = currDate.toString();
+
+			for (LocalTime time : times) {
+				LocalDateTime key = LocalDateTime.of(currDate, time);
+				Measurement measurement = measurements.get(key);
+				if (measurement == null) {
+					numMissingValues++;
+				}
+
+			}
+			currDate = currDate.plusDays(1);
+		}
+		returnStrings.add("Number of missing values in this period is " + numMissingValues);
+		return returnStrings;
 	}
 
 	/**
