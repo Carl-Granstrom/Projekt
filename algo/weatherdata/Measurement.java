@@ -5,10 +5,10 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class Measurement implements Comparable<Measurement> {
-    LocalDate date;
-    LocalTime time;
-    Float temperature;
-    char approvalcolor;
+    private LocalDate date;
+    private LocalTime time;
+    private Float temperature;
+    private char approvalcolor;
 
     public Measurement(LocalDate date, LocalTime time, String temperature, String approvalColor){
         this.date = date;
@@ -23,6 +23,22 @@ public class Measurement implements Comparable<Measurement> {
         } else {
             return false;
         }
+    }
+
+    public char getApprovalcolor(){
+        return approvalcolor;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public Float getTemperature() {
+        return temperature;
     }
 
     @Override

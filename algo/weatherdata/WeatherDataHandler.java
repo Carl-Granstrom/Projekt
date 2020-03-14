@@ -55,9 +55,6 @@ public class WeatherDataHandler {
 	public List<String> averageTemperatures(LocalDate dateFrom, LocalDate dateTo) {
 		List<String> returnStrings = new ArrayList<>();
 
-		//create a list of dates to check
-		List<LocalDate> dates = new ArrayList<>();
-
 		//iterate through the dates and calculate average
 		LocalDate currDate = dateFrom;
 		while (!currDate.isAfter(dateTo)) {
@@ -69,7 +66,7 @@ public class WeatherDataHandler {
 				LocalDateTime key = LocalDateTime.of(currDate, time);
 				Measurement measurement = measurements.get(key);
 				if (measurement != null) {
-					totalTemperature += measurement.temperature;
+					totalTemperature += measurement.getTemperature();
 					numTimes++;
 				}
 
@@ -95,27 +92,27 @@ public class WeatherDataHandler {
 		List<String> returnStrings = new ArrayList<>();
 
 		//create a list of dates to check
-		List<LocalDate> dates = new ArrayList<>();
 		LocalDate startDate = dateFrom;
 		LocalDate endDate = dateTo;
-		int numMissingValues = 0;
 
 		//iterate through the dates and calculate average
 		LocalDate currDate = startDate;
 		while (!currDate.isAfter(endDate)) {
-			String dateString = currDate.toString();
-
+			int numMissingValues = 0;
 			for (LocalTime time : times) {
 				LocalDateTime key = LocalDateTime.of(currDate, time);
 				Measurement measurement = measurements.get(key);
 				if (measurement == null) {
 					numMissingValues++;
 				}
-
+			}
+			//only add dates with missing values to the returnstring
+			if(numMissingValues != 0){
+				returnStrings.add("Number of missing values for " + currDate + " is: " + numMissingValues);
 			}
 			currDate = currDate.plusDays(1);
 		}
-		returnStrings.add("Number of missing values in this period is " + numMissingValues);
+
 		return returnStrings;
 	}
 
@@ -127,9 +124,36 @@ public class WeatherDataHandler {
 	 * @return period and percentage of approved values for the period  
 	 */
 	public List<String> approvedValues(LocalDate dateFrom, LocalDate dateTo) {
-		/**
-		 * TODO: Implement method.		
-		 */
-		return null;
+		List<String> returnString = new ArrayList<>();
+
+		//create a list of dates to check
+		List<LocalDate> dates = new ArrayList<>();
+		LocalDate startDate = dateFrom;
+		LocalDate endDate = dateTo;
+		float numMeasurements = 0;
+		float numGreen = 0;
+
+		//iterate through the dates and calculate average
+		LocalDate currDate = startDate;
+		while (!currDate.isAfter(endDate)) {
+			String dateString = currDate.toString();
+
+			for (LocalTime time : times) {
+				LocalDateTime key = LocalDateTime.of(currDate, time);
+				Measurement measurement = measurements.get(key);
+				if (measurement != null) {
+					numMeasurements++;
+					if (measurement.getApprovalcolor() == 'G'){
+						numGreen++;
+					}
+				}
+
+			}
+			currDate = currDate.plusDays(1);
+		}
+		float percentageApproved = numGreen / numMeasurements;
+
+		returnString.add("Percentage of approved values for " + dateFrom + " - " + dateTo +" is: " + percentageApproved);
+		return returnString;
 	}	
 }
